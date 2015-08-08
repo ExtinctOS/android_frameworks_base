@@ -123,8 +123,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-import com.android.internal.util.neoteric.DeviceConfigUtils;
-
 /**
  * The Settings provider contains global system-level device preferences.
  */
@@ -4313,9 +4311,6 @@ public final class Settings {
         @UnsupportedAppUsage
         public static String getStringForUser(ContentResolver resolver, String name,
                 int userHandle) {
-// QTI_BEGIN: 2018-04-09: Secure Systems: SEEMP: framework instrumentation and AppProtect features
-            android.util.SeempLog.record(android.util.SeempLog.getSeempGetApiIdFromValue(name));
-// QTI_END: 2018-04-09: Secure Systems: SEEMP: framework instrumentation and AppProtect features
             if (MOVED_TO_SECURE.contains(name)) {
                 Log.w(TAG, "Setting " + name + " has moved from android.provider.Settings.System"
                         + " to android.provider.Settings.Secure, returning read-only value.");
@@ -4402,9 +4397,6 @@ public final class Settings {
                 Log.v(TAG, "System.putString(name=" + name + ", value=" + value + ") for "
                         + userHandle);
             }
-// QTI_BEGIN: 2018-04-09: Secure Systems: SEEMP: framework instrumentation and AppProtect features
-            android.util.SeempLog.record(android.util.SeempLog.getSeempPutApiIdFromValue(name));
-// QTI_END: 2018-04-09: Secure Systems: SEEMP: framework instrumentation and AppProtect features
             if (MOVED_TO_SECURE.contains(name)) {
                 Log.w(TAG, "Setting " + name + " has moved from android.provider.Settings.System"
                         + " to android.provider.Settings.Secure, value is unchanged.");
@@ -5215,15 +5207,6 @@ public final class Settings {
         public static final String DISPLAY_COLOR_MODE_VENDOR_HINT =
                 "display_color_mode_vendor_hint";
 
-// QTI_BEGIN: 2020-05-15: Telephony: FR30706: Add a playing tone setting.
-        /**
-         * Whether to play tone while outgoing call is accepted.
-         * The value 1 - vibrate, 0 - not
-         * @hide
-         */
-        public static final String CALL_CONNECTED_TONE_ENABLED = "call_connected_tone_enabled";
-
-// QTI_END: 2020-05-15: Telephony: FR30706: Add a playing tone setting.
         /**
          * The user selected min refresh rate in frames per second. If infinite, the user wants
          * the highest possible refresh rate.
@@ -5899,12 +5882,6 @@ public final class Settings {
         public static final String ANIMATOR_DURATION_SCALE = Global.ANIMATOR_DURATION_SCALE;
 
         /**
-         * Whether or not to vibrate when a touchscreen gesture is detected
-         * @hide
-         */
-        public static final String TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK = "touchscreen_gesture_haptic_feedback";
-
-        /**
          * Control whether the accelerometer will be used to change screen
          * orientation.  If 0, it will not be used unless explicitly requested
          * by the application; if 1, it will be used by default unless explicitly
@@ -6531,41 +6508,6 @@ public final class Settings {
          * the setting value. See an example above.
          */
 
-	/**
-         * Display style of the status bar battery information
-         * 0: Display the battery an icon in portrait mode
-         * 1: Display the battery as a circle
-         * 2: Display the battery as plain text
-         * 3: Hide battery icon
-         * default: 0
-         * @hide
-         */
-        public static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
-        /**
-         * Status bar battery %
-         * 0: Hide the battery percentage
-         * 1: Display the battery percentage inside the icon
-         * 2: Display the battery percentage next to the icon
-         * @hide
-         */
-        public static final String STATUS_BAR_SHOW_BATTERY_PERCENT =
-                "status_bar_battery_percent";
-
-        /**
-         * Whether to show brightness slider in qs/qqs panel.
-         * 0 Hide   1 in QS Panel   2 in QS / QQS Panel
-         * Default 1.
-         * @hide
-         */
-        public static final String QS_SHOW_BRIGHTNESS = "qs_show_brightness";
-
-        /**
-         * Whether to show qs / qqs brightness slider at the bottom of the panel.
-         * Default 0.
-         * @hide
-         */
-        public static final String QS_BRIGHTNESS_POSITION_BOTTOM = "qs_brightness_position_bottom";
-
         /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
@@ -6579,6 +6521,8 @@ public final class Settings {
         };
 
         /**
+<<<<<<< HEAD
+=======
          * Power share threshold
          * @hide
          */
@@ -6591,6 +6535,7 @@ public final class Settings {
         public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
 
         /**
+>>>>>>> 09eb997bbb9e (base: Add three-fingers-swipe to screenshot [1/2])
          * These are all public system settings
          *
          * @hide
@@ -6720,9 +6665,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(MOUSE_POINTER_ACCELERATION_ENABLED);
             PRIVATE_SETTINGS.add(PREFERRED_REGION);
             PRIVATE_SETTINGS.add(MOUSE_SCROLLING_ACCELERATION);
-// QTI_BEGIN: 2020-05-15: Telephony: FR30706: Add a playing tone setting.
-            PRIVATE_SETTINGS.add(CALL_CONNECTED_TONE_ENABLED);
-// QTI_END: 2020-05-15: Telephony: FR30706: Add a playing tone setting.
             PRIVATE_SETTINGS.add(MOUSE_SCROLLING_SPEED);
         }
 
@@ -7153,9 +7095,6 @@ public final class Settings {
             MOVED_TO_GLOBAL.add(Settings.Global.NITZ_UPDATE_SPACING);
             MOVED_TO_GLOBAL.add(Settings.Global.NTP_SERVER);
             MOVED_TO_GLOBAL.add(Settings.Global.NTP_TIMEOUT);
-// QTI_BEGIN: 2018-08-11: Frameworks: base: Secondary NTP Server Settings
-            MOVED_TO_GLOBAL.add(Settings.Global.NTP_SERVER_2);
-// QTI_END: 2018-08-11: Frameworks: base: Secondary NTP Server Settings
             MOVED_TO_GLOBAL.add(Settings.Global.PDP_WATCHDOG_ERROR_POLL_COUNT);
             MOVED_TO_GLOBAL.add(Settings.Global.PDP_WATCHDOG_LONG_POLL_INTERVAL_MS);
             MOVED_TO_GLOBAL.add(Settings.Global.PDP_WATCHDOG_MAX_PDP_RESET_FAIL_COUNT);
@@ -12932,27 +12871,6 @@ public final class Settings {
                 "com.android.server.display.HBM_SETTING_KEY";
 
         /**
-         * User selectable PIF data.
-         * @hide
-         */
-        @Readable
-        public static final String PIF_DATA = "pif_data";
-
-        /**
-         * PIF data fetched from our repo.
-         * @hide
-         */
-        @Readable
-        public static final String FETCHED_PIF = "fetched_pif";
-
-        /**
-         * User selectable keybox data.
-         * @hide
-         */
-        @Readable
-        public static final String KEYBOX_DATA = "keybox_data";
-
-        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -14354,17 +14272,6 @@ public final class Settings {
         @Readable
         public static final String MOBILE_DATA_ALWAYS_ON = "mobile_data_always_on";
 
-// QTI_BEGIN: 2021-05-03: Telephony: Add smart DDS switch to Developer options
-        /**
-        * Whether to allow modem to intelligently switch DDS without user direction
-        *
-        * (0 = disabled, 1 = enabled)
-        * @hide
-        */
-        @Readable
-        public static final String SMART_DDS_SWITCH = "smart_dds_switch";
-
-// QTI_END: 2021-05-03: Telephony: Add smart DDS switch to Developer options
         /**
          * The duration in milliseconds of each action, separated by commas. Ex:
          *
@@ -14591,9 +14498,6 @@ public final class Settings {
          */
         @Readable
         public static final String NTP_TIMEOUT = "ntp_timeout";
-        /** Secondary NTP server. {@hide} */
-        @Readable
-        public static final String NTP_SERVER_2 = "ntp_server_2";
 
         /** {@hide} */
         @Readable
@@ -19281,16 +19185,6 @@ public final class Settings {
         @Readable
         public static final String CELL_ON = "cell_on";
 
-// QTI_BEGIN: 2020-05-11: Telephony: Add vibrating for outgoing call accepted support
-        /**
-         * Whether to vibrate while outgoing call is accepted
-         * The value 1 - vibrate, 0 - not
-         * @hide
-         */
-        public static final String VIBRATING_FOR_OUTGOING_CALL_ACCEPTED =
-                "vibrating_for_outgoing_call_accepted";
-
-// QTI_END: 2020-05-11: Telephony: Add vibrating for outgoing call accepted support
         /**
          * Global settings which can be accessed by instant apps.
          * @hide
@@ -21245,9 +21139,6 @@ public final class Settings {
         @RequiresPermission(Manifest.permission.WRITE_DEVICE_CONFIG)
         public static boolean putString(@NonNull String namespace,
                 @NonNull String name, @Nullable String value, boolean makeDefault) {
-            if (DeviceConfigUtils.shouldDenyDeviceConfigControl(namespace, name)) {
-                return true;
-            }
             ContentResolver resolver = getContentResolver();
             return sNameValueCache.putStringForUser(resolver, createCompositeName(namespace, name),
                     value, null, makeDefault, resolver.getUserId(),
@@ -21269,9 +21160,7 @@ public final class Settings {
         public static boolean setStrings(@NonNull String namespace,
                 @NonNull Map<String, String> keyValues)
                 throws DeviceConfig.BadConfigException {
-            boolean result = setStrings(getContentResolver(), namespace, keyValues);
-            DeviceConfigUtils.setDefaultProperties(namespace, null);
-            return result;
+            return setStrings(getContentResolver(), namespace, keyValues);
         }
 
         /**
@@ -21321,9 +21210,6 @@ public final class Settings {
         @RequiresPermission(Manifest.permission.WRITE_DEVICE_CONFIG)
         public static boolean deleteString(@NonNull String namespace,
                 @NonNull String name) {
-            if (DeviceConfigUtils.shouldDenyDeviceConfigControl(namespace, name)) {
-                return true;
-            }
             ContentResolver resolver = getContentResolver();
             return sNameValueCache.deleteStringForUser(resolver,
                     createCompositeName(namespace, name), resolver.getUserId());
@@ -21360,7 +21246,6 @@ public final class Settings {
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't reset to defaults for " + CONTENT_URI, e);
             }
-            DeviceConfigUtils.setDefaultProperties(null, null);
         }
 
         /**

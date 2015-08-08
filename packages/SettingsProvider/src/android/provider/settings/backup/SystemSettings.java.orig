@@ -125,6 +125,9 @@ public class SystemSettings {
                 Settings.System.NOTIFICATION_COOLDOWN_ALL,
                 Settings.System.NOTIFICATION_COOLDOWN_VIBRATE_UNLOCKED,
                 Settings.System.PREFERRED_REGION,
+<<<<<<< HEAD
+                Settings.System.CV_ENABLED
+=======
                 Settings.System.CV_ENABLED,
                 Settings.System.QS_SHOW_BRIGHTNESS,
         	Settings.System.QS_BRIGHTNESS_POSITION_BOTTOM,
@@ -132,6 +135,7 @@ public class SystemSettings {
         	Settings.System.STATUS_BAR_SHOW_BATTERY_PERCENT,
                 Settings.System.POWER_SHARE_THRESHOLD,
 		Settings.System.THREE_FINGER_GESTURE
+>>>>>>> 09eb997bbb9e (base: Add three-fingers-swipe to screenshot [1/2])
         ));
         if (Flags.backUpSmoothDisplayAndForcePeakRefreshRate()) {
             settings.add(Settings.System.PEAK_REFRESH_RATE);
