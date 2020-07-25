@@ -105,8 +105,6 @@ import android.graphics.fonts.FontManager;
 import android.hardware.ConsumerIrManager;
 import android.hardware.ISensorPrivacyManager;
 import android.hardware.ISerialManager;
-import android.hardware.PowerShareManager;
-import android.hardware.IPowerShareManager;
 import android.hardware.SensorManager;
 import android.hardware.SensorPrivacyManager;
 import android.hardware.SerialManager;
@@ -297,8 +295,6 @@ import com.android.internal.util.Preconditions;
 
 import java.util.Map;
 import java.util.Objects;
-
-import vendor.lineage.powershare.IPowerShare;
 
 /**
  * Manages all of the system services that can be returned by {@link Context#getSystemService}.
@@ -1085,6 +1081,8 @@ public final class SystemServiceRegistry {
                         return new TvAdManager(service, ctx.getUserId());
                     }});
 
+<<<<<<< HEAD
+=======
         registerService(Context.POWER_SHARE_SERVICE, PowerShareManager.class,
                 new CachedServiceFetcher<PowerShareManager>() {
                     @Override
@@ -1111,6 +1109,7 @@ public final class SystemServiceRegistry {
                         return new DcDimmingManager(service);
                     }});
 
+>>>>>>> 0dc0dd5d61d8 (base: Introduce automated DC Dimming [1/4])
         registerService(Context.TV_INPUT_SERVICE, TvInputManager.class,
                 new CachedServiceFetcher<TvInputManager>() {
             @Override
@@ -1713,7 +1712,6 @@ public final class SystemServiceRegistry {
                                 IAmbientContextManager.Stub.asInterface(iBinder);
                         return new AmbientContextManager(ctx.getOuterContext(), manager);
                     }});
-
 
         registerService(Context.WEARABLE_SENSING_SERVICE, WearableSensingManager.class,
                 new CachedServiceFetcher<WearableSensingManager>() {
