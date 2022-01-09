@@ -88,8 +88,6 @@ import com.android.internal.policy.SystemBarUtils;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.LatencyTracker;
 import com.android.keyguard.ActiveUnlockConfig;
-import com.android.keyguard.EmergencyButton;
-import com.android.keyguard.EmergencyButtonController;
 import com.android.keyguard.KeyguardUnfoldTransition;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.dagger.KeyguardStatusBarViewComponent;
@@ -345,12 +343,15 @@ public final class NotificationPanelViewController implements
     private boolean mAnimateNextPositionUpdate;
     private final ScreenOffAnimationController mScreenOffAnimationController;
     private final UnlockedScreenOffAnimationController mUnlockedScreenOffAnimationController;
+<<<<<<< HEAD
+=======
 
     private final EmergencyButtonController.Factory mEmergencyButtonControllerFactory;
     private EmergencyButtonController mEmergencyButtonController;
 
     private final EdgeLightViewController mEdgeLightViewController;
 
+>>>>>>> 58cf717d5571 (SystemUI: Add edge light customizations [1/2])
     private TrackingStartedListener mTrackingStartedListener;
     private OpenCloseListener mOpenCloseListener;
     private GestureRecorder mGestureRecorder;
@@ -740,7 +741,6 @@ public final class NotificationPanelViewController implements
         mNotificationStackScrollLayoutController = notificationStackScrollLayoutController;
         mKeyguardStatusBarViewComponentFactory = keyguardStatusBarViewComponentFactory;
         mDepthController = notificationShadeDepthController;
-        mEmergencyButtonControllerFactory = emergencyButtonControllerFactory;
         mFragmentService = fragmentService;
         mStatusBarService = statusBarService;
         mSplitShadeStateController = splitShadeStateController;
