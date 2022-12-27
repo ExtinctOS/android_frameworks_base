@@ -31,13 +31,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.AudioManager;
-// QTI_BEGIN: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-import android.net.wifi.ScanResult;
-// QTI_END: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-// QTI_BEGIN: 2019-08-26: WLAN: wifi: Get Hotspot Wi-Fi generation from driver
-import android.net.wifi.WifiManager;
-// QTI_END: 2019-08-26: WLAN: wifi: Get Hotspot Wi-Fi generation from driver
-import android.nfc.NfcAdapter;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -139,8 +132,11 @@ public class PhoneStatusBarPolicy
     private final String mSlotSensorsOff;
     private final String mSlotScreenRecord;
     private final String mSlotConnectedDisplay;
+<<<<<<< HEAD
+=======
     private final String mSlotNfc;
     private final String mSlotNetworkTraffic;
+>>>>>>> f0a7834861cf ([SQUASH] Network traffic mode for status bar [1/2])
     private final int mDisplayId;
     private final SharedPreferences mSharedPreferences;
     private final DateFormatUtil mDateFormatUtil;
@@ -184,6 +180,8 @@ public class PhoneStatusBarPolicy
     private BluetoothController mBluetooth;
     private AlarmManager.AlarmClockInfo mNextAlarm;
 
+<<<<<<< HEAD
+=======
     private NfcAdapter mAdapter;
     private final Context mContext;
 
@@ -191,8 +189,9 @@ public class PhoneStatusBarPolicy
 
     private boolean mShowNetworkTraffic;
 
+>>>>>>> f0a7834861cf ([SQUASH] Network traffic mode for status bar [1/2])
     @Inject
-    public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
+    public PhoneStatusBarPolicy(StatusBarIconController iconController,
             CommandQueue commandQueue, BroadcastDispatcher broadcastDispatcher,
             @Main Executor mainExecutor, @UiBackground Executor uiBgExecutor, @Main Looper looper,
             @Main Resources resources,
@@ -216,7 +215,6 @@ public class PhoneStatusBarPolicy
             JavaAdapter javaAdapter,
 	    TunerService tunerService
     ) {
-        mContext = context;
         mIconController = iconController;
         mCommandQueue = commandQueue;
         mConnectedDisplayInteractor = connectedDisplayInteractor;
@@ -268,8 +266,11 @@ public class PhoneStatusBarPolicy
         mSlotSensorsOff = resources.getString(com.android.internal.R.string.status_bar_sensors_off);
         mSlotScreenRecord = resources.getString(
                 com.android.internal.R.string.status_bar_screen_record);
+<<<<<<< HEAD
+=======
         mSlotNfc = resources.getString(com.android.internal.R.string.status_bar_nfc);
         mSlotNetworkTraffic = resources.getString(com.android.internal.R.string.status_bar_network_traffic);
+>>>>>>> f0a7834861cf ([SQUASH] Network traffic mode for status bar [1/2])
 
         mDisplayId = displayId;
         mSharedPreferences = sharedPreferences;
@@ -291,7 +292,6 @@ public class PhoneStatusBarPolicy
         filter.addAction(Intent.ACTION_PROFILE_REMOVED);
         filter.addAction(Intent.ACTION_PROFILE_ACCESSIBLE);
         filter.addAction(Intent.ACTION_PROFILE_INACCESSIBLE);
-        filter.addAction(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED);
         mBroadcastDispatcher.registerReceiverWithHandler(mIntentReceiver, filter, mHandler);
         Observer<Integer> observer = ringer -> mHandler.post(this::updateVolumeZen);
 
@@ -377,6 +377,8 @@ public class PhoneStatusBarPolicy
         mIconController.setIcon(mSlotScreenRecord, R.drawable.stat_sys_screen_record, null);
         mIconController.setIconVisibility(mSlotScreenRecord, false);
 
+<<<<<<< HEAD
+=======
         mIconController.setIcon(mSlotNfc, R.drawable.ic_statusbar_nfc,
                 mResources.getString(R.string.quick_settings_nfc_label));
 
@@ -388,6 +390,7 @@ public class PhoneStatusBarPolicy
             NETWORK_TRAFFIC_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
         updateNetworkTraffic();
 
+>>>>>>> f0a7834861cf ([SQUASH] Network traffic mode for status bar [1/2])
         mRotationLockController.addCallback(this);
         mBluetooth.addCallback(this);
         mProvisionedController.addCallback(this);
@@ -534,21 +537,6 @@ public class PhoneStatusBarPolicy
         }
     }
 
-    private NfcAdapter getAdapter() {
-        if (mAdapter == null) {
-            try {
-                mAdapter = NfcAdapter.getDefaultAdapter(mContext);
-            } catch (UnsupportedOperationException e) {
-                mAdapter = null;
-            }
-        }
-        return mAdapter;
-    }
-
-    private final void updateNfc() {
-        mIconController.setIconVisibility(mSlotNfc, getAdapter() != null && getAdapter().isEnabled());
-    }
-
     private void updateRingerAndAlarmIcons(int zen) {
         boolean vibrateVisible = false;
         boolean muteVisible = false;
@@ -598,28 +586,6 @@ public class PhoneStatusBarPolicy
             if (mBluetooth.isBluetoothConnected()
                     && (mBluetooth.isBluetoothAudioActive()
                     || !mBluetooth.isBluetoothAudioProfileOnly())) {
-                int batteryLevel = mBluetooth.getBatteryLevel();
-                if (batteryLevel == 100) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_9;
-                } else if (batteryLevel >= 90) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_8;
-                } else if (batteryLevel >= 80) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_7;
-                } else if (batteryLevel >= 70) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_6;
-                } else if (batteryLevel >= 60) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_5;
-                } else if (batteryLevel >= 50) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_4;
-                } else if (batteryLevel >= 40) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_3;
-                } else if (batteryLevel >= 30) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_2;
-                } else if (batteryLevel >= 20) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_1;
-                } else if (batteryLevel >= 10) {
-                    iconId = R.drawable.stat_sys_data_bluetooth_connected_battery_0;
-                }
                 contentDescription = mResources.getString(
                         R.string.accessibility_bluetooth_connected);
                 bluetoothVisible = mBluetooth.isBluetoothEnabled();
@@ -725,13 +691,6 @@ public class PhoneStatusBarPolicy
     private final HotspotController.Callback mHotspotCallback = new HotspotController.Callback() {
         @Override
         public void onHotspotChanged(boolean enabled, int numDevices) {
-// QTI_BEGIN: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-            mIconController.setIconVisibility(mSlotHotspot, enabled);
-        }
-        @Override
-        public void onHotspotChanged(boolean enabled, int numDevices, int standard) {
-            updateHotspotIcon(standard);
-// QTI_END: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
             mIconController.setIconVisibility(mSlotHotspot, enabled);
         }
     };
@@ -903,28 +862,9 @@ public class PhoneStatusBarPolicy
                 case AudioManager.ACTION_HEADSET_PLUG:
                     updateHeadsetPlug(intent);
                     break;
-                case NfcAdapter.ACTION_ADAPTER_STATE_CHANGED:
-                    updateNfc();
-                    break;
             }
         }
     };
-
-// QTI_BEGIN: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-    private void updateHotspotIcon(int standard) {
-        if (standard == ScanResult.WIFI_STANDARD_11AX) {
-// QTI_END: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-                mResources.getString(R.string.accessibility_status_bar_hotspot));
-// QTI_BEGIN: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-        } else if (standard == ScanResult.WIFI_STANDARD_11AC) {
-// QTI_END: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-                mResources.getString(R.string.accessibility_status_bar_hotspot));
-// QTI_BEGIN: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-        } else if (standard == ScanResult.WIFI_STANDARD_11N) {
-// QTI_END: 2020-04-22: WLAN: wifi: refactor Wi-Fi generation UI enhancements
-                mResources.getString(R.string.accessibility_stus_bar_hotspot))
-        }
-    }
 
     private void onConnectedDisplayAvailabilityChanged(ConnectedDisplayInteractor.State state) {
         boolean visible = state != ConnectedDisplayInteractor.State.DISCONNECTED;
