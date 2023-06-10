@@ -263,9 +263,12 @@ java_library {
 
         "com.android.sysprop.localization",
         "PlatformProperties",
+<<<<<<< HEAD
+=======
         "vendor.lineage.health-V1-java",
         "vendor.lineage.touch-V1.0-java",
         "vendor.lineage.powershare-V1-java",
+>>>>>>> 6018ff7ea491 (base: Implement Lineage health service)
     ],
     sdk_version: "core_platform",
     installable: false,

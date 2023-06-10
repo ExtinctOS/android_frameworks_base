@@ -72,9 +72,6 @@ import android.os.FileUtils;
 import android.os.IBinder;
 import android.os.IBinderCallback;
 import android.os.IIncidentManager;
-// QTI_BEGIN: 2018-02-17: Wigig: frameworks/base: Add WiGig support
-import android.os.IBinder;
-// QTI_END: 2018-02-17: Wigig: frameworks/base: Add WiGig support
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
@@ -204,7 +201,6 @@ import com.android.server.musicrecognition.MusicRecognitionManagerService;
 import com.android.server.net.NetworkManagementService;
 import com.android.server.net.NetworkPolicyManagerService;
 import com.android.server.net.watchlist.NetworkWatchlistService;
-import com.android.server.neoteric.AttestationService;
 import com.android.server.notification.NotificationManagerService;
 import com.android.server.oemlock.OemLockService;
 import com.android.server.om.OverlayManagerService;
@@ -239,7 +235,6 @@ import com.android.server.policy.PermissionPolicyService;
 import com.android.server.policy.PhoneWindowManager;
 import com.android.server.policy.role.RoleServicePlatformHelperImpl;
 import com.android.server.power.PowerManagerService;
-import com.android.server.power.PowerOffAlarmService;
 import com.android.server.power.ShutdownThread;
 import com.android.server.power.ThermalManagerService;
 import com.android.server.power.hint.HintManagerService;
@@ -312,16 +307,14 @@ import com.android.server.webkit.WebViewUpdateService;
 import com.android.server.wm.ActivityTaskManagerService;
 import com.android.server.wm.WindowManagerGlobalLock;
 import com.android.server.wm.WindowManagerService;
+<<<<<<< HEAD
+=======
 import com.android.server.lineage.health.HealthInterfaceService;
 import com.android.server.neoteric.CustomDeviceConfigService;
 import com.android.server.neoteric.PowerShareService;
+>>>>>>> 6018ff7ea491 (base: Implement Lineage health service)
 
 import dalvik.system.VMRuntime;
-// QTI_BEGIN: 2018-02-17: Wigig: frameworks/base: Add WiGig support
-import dalvik.system.PathClassLoader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-// QTI_END: 2018-02-17: Wigig: frameworks/base: Add WiGig support
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -337,8 +330,6 @@ import java.util.Timer;
 import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
-
-import vendor.lineage.powershare.IPowerShare;
 
 /**
  * Entry point to {@code system_server}.
@@ -408,8 +399,6 @@ public final class SystemServer implements Dumpable {
             "com.android.ecm.EnhancedConfirmationService";
     private static final String SAFETY_CENTER_SERVICE_CLASS =
             "com.android.safetycenter.SafetyCenterService";
-    private static final String BLUETOOTH_SERVICE_CLASS =
-            "com.android.server.bluetooth.BluetoothService";
     private static final String SDK_SANDBOX_MANAGER_SERVICE_CLASS =
             "com.android.server.sdksandbox.SdkSandboxManagerService$Lifecycle";
     private static final String AD_SERVICES_MANAGER_SERVICE_CLASS =
@@ -1548,10 +1537,6 @@ public final class SystemServer implements Dumpable {
         MmsServiceBroker mmsService = null;
         HardwarePropertiesManagerService hardwarePropertiesService = null;
         PacProxyService pacProxyService = null;
-// QTI_BEGIN: 2018-02-17: Wigig: frameworks/base: Add WiGig support
-        Object wigigP2pService = null;
-        Object wigigService = null;
-// QTI_END: 2018-02-17: Wigig: frameworks/base: Add WiGig support
 
         boolean disableSystemTextClassifier = SystemProperties.getBoolean(
                 "config.disable_systemtextclassifier", false);
@@ -1560,10 +1545,6 @@ public final class SystemServer implements Dumpable {
                 false);
         boolean disableCameraService = SystemProperties.getBoolean("config.disable_cameraservice",
                 false);
-
-// QTI_BEGIN: 2018-02-17: Wigig: frameworks/base: Add WiGig support
-        boolean enableWigig = SystemProperties.getBoolean("persist.vendor.wigig.enable", false);
-// QTI_END: 2018-02-17: Wigig: frameworks/base: Add WiGig support
 
         boolean isDesktop = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PC);
 
@@ -1809,10 +1790,6 @@ public final class SystemServer implements Dumpable {
             mSystemServiceManager.startService(PinnerService.class);
             t.traceEnd();
 
-// QTI_BEGIN: 2019-11-13: Core: Add mechanism to improve consistancy of notification
-            mSystemServiceManager.startService(ActivityTriggerService.class);
-
-// QTI_END: 2019-11-13: Core: Add mechanism to improve consistancy of notification
             if (Build.IS_DEBUGGABLE && ProfcollectForwardingService.enabled()) {
                 t.traceBegin("ProfcollectForwardingService");
                 mSystemServiceManager.startService(ProfcollectForwardingService.class);
@@ -1831,10 +1808,6 @@ public final class SystemServer implements Dumpable {
 
             t.traceBegin("StartLogcatManager");
             mSystemServiceManager.startService(LogcatManagerService.class);
-            t.traceEnd();
-
-            t.traceBegin("StartPowerOffAlarmService");
-            mSystemServiceManager.startService(PowerOffAlarmService.class);
             t.traceEnd();
 
             if (!isWatch && !isTv && !isAutomotive && !isDesktop
@@ -1860,13 +1833,6 @@ public final class SystemServer implements Dumpable {
             if (!isWatch && !isTv && !isAutomotive && enableTradeInMode()) {
                 t.traceBegin("StartTradeInModeService");
                 mSystemServiceManager.startService(TradeInModeService.class);
-                t.traceEnd();
-            }
-
-            if (IPowerShare.Stub.asInterface(ServiceManager.
-                        getService("vendor.lineage.powershare.IPowerShare/default")) != null) {
-                t.traceBegin("StartPowerShareService");
-                mSystemServiceManager.startService(PowerShareService.class);
                 t.traceEnd();
             }
 
@@ -2328,42 +2294,6 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
-// QTI_BEGIN: 2019-03-26: WIGIG: frameworks/base: fix wigig service initialization
-            if (enableWigig) {
-                try {
-                    Slog.i(TAG, "Wigig Service");
-                    String wigigClassPath =
-// QTI_END: 2019-03-26: WIGIG: frameworks/base: fix wigig service initialization
-// QTI_BEGIN: 2020-02-12: WIGIG: Update wigig-service path
-                        "/system/system_ext/framework/wigig-service.jar" + ":" +
-// QTI_END: 2020-02-12: WIGIG: Update wigig-service path
-// QTI_BEGIN: 2020-01-20: WIGIG: Service: Update path location for Wigig service binaries
-                        "/system/system_ext/framework/vendor.qti.hardware.wigig.supptunnel-V1.0-java.jar" + ":" +
-                        "/system/system_ext/framework/vendor.qti.hardware.wigig.netperftuner-V1.0-java.jar" + ":" +
-                        "/system/system_ext/framework/vendor.qti.hardware.capabilityconfigstore-V1.0-java.jar";
-// QTI_END: 2020-01-20: WIGIG: Service: Update path location for Wigig service binaries
-// QTI_BEGIN: 2019-03-26: WIGIG: frameworks/base: fix wigig service initialization
-                    PathClassLoader wigigClassLoader =
-                            new PathClassLoader(wigigClassPath, getClass().getClassLoader());
-                    Class wigigP2pClass = wigigClassLoader.loadClass(
-                        "com.qualcomm.qti.server.wigig.p2p.WigigP2pServiceImpl");
-                    Constructor<Class> ctor = wigigP2pClass.getConstructor(Context.class);
-                    wigigP2pService = ctor.newInstance(context);
-                    Slog.i(TAG, "Successfully loaded WigigP2pServiceImpl class");
-                    ServiceManager.addService("wigigp2p", (IBinder) wigigP2pService);
-
-                    Class wigigClass = wigigClassLoader.loadClass(
-                        "com.qualcomm.qti.server.wigig.WigigService");
-                    ctor = wigigClass.getConstructor(Context.class);
-                    wigigService = ctor.newInstance(context);
-                    Slog.i(TAG, "Successfully loaded WigigService class");
-                    ServiceManager.addService("wigig", (IBinder) wigigService);
-                } catch (Throwable e) {
-                    reportWtf("starting WigigService", e);
-                }
-            }
-
-// QTI_END: 2019-03-26: WIGIG: frameworks/base: fix wigig service initialization
             t.traceBegin("StartSystemUpdateManagerService");
             try {
                 ServiceManager.addService(Context.SYSTEM_UPDATE_SERVICE,
@@ -2877,6 +2807,8 @@ public final class SystemServer implements Dumpable {
                 mSystemServiceManager.startService(BackgroundInstallControlService.class);
                 t.traceEnd();
             }
+<<<<<<< HEAD
+=======
 
             // CustomDeviceConfigService
             t.traceBegin("StartCustomDeviceConfigService");
@@ -2892,6 +2824,7 @@ public final class SystemServer implements Dumpable {
             t.traceBegin("StartHealthService");
             mSystemServiceManager.startService(HealthInterfaceService.class);
             t.traceEnd();
+>>>>>>> 6018ff7ea491 (base: Implement Lineage health service)
         }
 
         t.traceBegin("StartMediaProjectionManager");
@@ -3130,27 +3063,6 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startBootPhase(t, SystemService.PHASE_SYSTEM_SERVICES_READY);
         t.traceEnd();
 
-// QTI_BEGIN: 2018-02-17: Wigig: frameworks/base: Add WiGig support
-        // Wigig services are not registered as system services because of class loader
-        // limitations, send boot phase notification separately
-        if (enableWigig) {
-            try {
-                Slog.i(TAG, "calling onBootPhase for Wigig Services");
-                Class wigigP2pClass = wigigP2pService.getClass();
-                Method m = wigigP2pClass.getMethod("onBootPhase", int.class);
-                m.invoke(wigigP2pService, new Integer(
-                    SystemService.PHASE_SYSTEM_SERVICES_READY));
-
-                Class wigigClass = wigigService.getClass();
-                m = wigigClass.getMethod("onBootPhase", int.class);
-                m.invoke(wigigService, new Integer(
-                    SystemService.PHASE_SYSTEM_SERVICES_READY));
-            } catch (Throwable e) {
-                reportWtf("Wigig services ready", e);
-            }
-        }
-
-// QTI_END: 2018-02-17: Wigig: frameworks/base: Add WiGig support
         t.traceBegin("MakeWindowManagerServiceReady");
         try {
             wm.systemReady();
