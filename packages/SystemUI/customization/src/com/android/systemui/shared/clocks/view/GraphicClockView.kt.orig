@@ -62,7 +62,14 @@ class GraphicClockView @JvmOverloads constructor(
 
     override fun drawClock(canvas: Canvas) {
         if (timeStr.isNullOrBlank() || !TextUtils.isDigitsOnly(timeStr)) return
+<<<<<<< HEAD
+
+        val dotSize = resources.getDimension(R.dimen.dot_size) * scaleRatio
+        val dotColor = getClockColor()
+
+=======
         val dotColor = clockColor
+>>>>>>> 8575302af5b9 (fixup: [FEATURE] add nothing lockscreen clocks provider)
         drawClockTicks(canvas)
         drawClockDot(canvas, dotSize * 1.5f, dotColor)
         drawClockHands(canvas, timeStr)
@@ -87,7 +94,13 @@ class GraphicClockView @JvmOverloads constructor(
             val seconds = time.takeLast(2).toInt()
             val minutes = time.dropLast(2).takeLast(2).toInt()
             val hours = time.dropLast(4).toInt()
+<<<<<<< HEAD
+
+            val baseLength = resources.getDimension(R.dimen.clock_hand_size) * scaleRatio
+            val baseColor = getClockColor()
+=======
             val baseColor = clockColor
+>>>>>>> 8575302af5b9 (fixup: [FEATURE] add nothing lockscreen clocks provider)
             val highlightColor = ContextCompat.getColor(context, R.color.clock_dot_color)
             val hourAngle = (hours + minutes / 60f) * 5
             val minuteAngle = minutes + seconds / 60f
@@ -122,7 +135,13 @@ class GraphicClockView @JvmOverloads constructor(
     private fun drawClockTicks(canvas: Canvas) {
         val tick = this.tick ?: return
         val tickLight = this.tickLight ?: return
+<<<<<<< HEAD
+
+        val color = getClockColor()
+
+=======
         val color = clockColor
+>>>>>>> 8575302af5b9 (fixup: [FEATURE] add nothing lockscreen clocks provider)
         tickPaint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
         val tickWidth = tick.width * scaleRatio
         val tickHeight = tick.height * scaleRatio
@@ -146,7 +165,11 @@ class GraphicClockView @JvmOverloads constructor(
         val str = SimpleDateFormat(format, Locale.ENGLISH).format(calendar.time)
         if (timeStr != str && str.isNotEmpty()) {
             timeStr = str
+<<<<<<< HEAD
+            setContentDescription(getTalkBackContent())
+=======
             contentDescription = talkBackContent
+>>>>>>> 8575302af5b9 (fixup: [FEATURE] add nothing lockscreen clocks provider)
             invalidate()
         }
     }

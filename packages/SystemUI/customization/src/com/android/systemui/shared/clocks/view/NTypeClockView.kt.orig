@@ -79,7 +79,13 @@ class NTypeClockView @JvmOverloads constructor(
 
         val availableWidth = min(totalWidth, width.toFloat())
         val startX = (width - availableWidth) / 2
+<<<<<<< HEAD
+
+        val color = getClockColor()
+        paint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+=======
         paint.colorFilter = PorterDuffColorFilter(clockColor, PorterDuff.Mode.SRC_IN)
+>>>>>>> 8575302af5b9 (fixup: [FEATURE] add nothing lockscreen clocks provider)
 
         var currentX = startX
 
